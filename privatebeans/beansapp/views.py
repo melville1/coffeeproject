@@ -30,10 +30,10 @@ class OrderView(View):
         
         products = Product.objects.all()
        
-        formset = product_form_set()
-        print(formset)
+        # formset = product_form_set()
+        # print(formset)
 
-        # testform = ProductsInOrderForm
+        testform = ProductsInOrderForm()
         
          # total = 0
         # for product in products:
@@ -49,11 +49,11 @@ class OrderView(View):
             
             
             'products': products,
-            # 'testform': testform,
+            'testform': testform,
             
             
             # 'total': total,
-            'formset': formset
+            # 'formset': formset
             
         }
 

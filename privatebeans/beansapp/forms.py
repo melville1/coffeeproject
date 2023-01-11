@@ -5,17 +5,17 @@ from beansapp.models import ProductsInOrder, Order
 
 
 
-class OrderForm(ModelForm):
-    class Meta:
-        model = Order
-        fields = '__all__'
+# class OrderForm(ModelForm):
+#     class Meta:
+#         model = Order
+#         # fields = '__all__'
 
 
 
 
 
 
-class ProductsInOrderForm(OrderForm):
+class ProductsInOrderForm(ModelForm):
     class Meta:
         model = ProductsInOrder
         fields = '__all__'
