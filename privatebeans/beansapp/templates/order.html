@@ -2,34 +2,17 @@
 
 <!-- {% load static %} -->
 
-{% block content%}
 
 
-<div>
-<form method="POST" action="">
-    {% csrf_token %}
-    {{testform}}
-</div>
-</form>
 
-<div>
-<form method = 'POST' action="">
-    {% csrf_token %}
-    {{ testform }}
-</div>
+{% block content %}
+   <h2>Add Photos</h2>
+   <form method="post" enctype="multipart/form-data">
+       {{ formset.as_p}}
+       {% csrf_token %}
+       <button type="submit" >Purchase Order</button>
+   </form>
 
-<div>
-<form method="POST" action="">
-    {% csrf_token %}
-    {{testform}}
-</div>
-
-<div>
-<form>
-<input type = "submit" name = 'purchase order' value = 'Purchase Order'/>
-</div>
-
-</form>
 
 {% endblock %}
    

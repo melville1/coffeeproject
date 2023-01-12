@@ -1,9 +1,9 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from beansapp.models import Product,Order, Addressee, ProductsInOrder
-from beansapp.forms import ProductsInOrderForm
-from django.forms import formset_factory
-from. forms import ProductsInOrderForm
+from beansapp.models import Product,Order, Addressee
+from .forms import OrderForm
+from django.forms import inlineformset_factory
+
 
 # Create your views here.
 class HomeView(View):
@@ -20,42 +20,20 @@ class HomeView(View):
         )
 
 class OrderView(View):
-    product_count = Product.objects.all().count()
-    product_form_set = formset_factory(ProductsInOrderForm, extra=product_count)
+   
+    
 
-    def get (self,request,):
+    def get (self,request,id):
+                                    # The orders will be associated with table Addressee
+                                    # second arguments specifies which table it will use to make forms
+        OrderFormset = inlineformset_factory(Addressee,Order, fields=['product','quantity'])
+        addressee = Addressee.objects.get(id=id) # retrieveing a specific addressee
+        formset = OrderFormset(queryset=Order.objects.none(), instance=addressee)
 
-        product_form_set = formset_factory(ProductsInOrderForm, extra=OrderView.product_count)
-        
-        
-        products = Product.objects.all()
        
-        # formset = product_form_set()
-        # print(formset)
-
-        testform = ProductsInOrderForm()
-        
-         # total = 0
-        # for product in products:
-        #     total += product.price
-        # total = round(total,2)
-        # # print(total)
-        # get_quantity_and_product
-        
-        # for product in products:
-        #     product = product * product.price
-
         html_data ={ 
-            
-            
-            'products': products,
-            'testform': testform,
-            
-            
-            # 'total': total,
-            # 'formset': formset
-            
-        }
+            'formset':formset
+            }
 
 
         return render(
@@ -63,32 +41,82 @@ class OrderView(View):
         template_name= "order.html",
         context= html_data
         )
-    def post(self,request):
-        product_form_set = formset_factory(ProductsInOrderForm, extra=OrderView.product_count-1)
-        print(request.POST)
-        formset = product_form_set(request.POST, request.FILES)   
+
+    def post(self,request,id):
+        OrderFormset = inlineformset_factory(Addressee,Order, fields=['product', 'quantity'])
+        addressee = Addressee.objects.get(id=id) # retrieveing a specific addressee
+        formset = OrderFormset(request.POST, instance=addressee)
         if formset.is_valid():
-            for form in formset:
-                if form.cleaned_data:
-                    products = form.save(commit=False)
-                    products.save()
-                    
+            formset.save()
+        return redirect('confirmation', id)
+
+
+class EditView(View):
+
+    def get (self,request,id):
+        OrderFormset = inlineformset_factory(Addressee,Order, fields=['product','quantity'])
+        addressee = Addressee.objects.get(id=1) # retrieveing a specific addressee
+        formset = OrderFormset(queryset=Order.objects.none(), instance=addressee)
+
+       
+        html_data ={ 
+            'formset':formset
+            }
+
+
+        return render(
+        request= request,
+        template_name= "order.html",
+        context= html_data
+        )
+
+       
+        
+       
+
+
+       
+
+    def post(self,request,id):
+        order= Order.objects.get(id=id)
+        order_form= OrderForm(request.POST, instance=order)
+        order_form.save()
+        return redirect('order', id)
 
         
-        redirect('confirmation')
+
+
+   
 
 
 class ConfirmationView(View):
-    def get (self,request):
-        # order = Order.objects.get(id=)
+    def get (self,request,id):
+        addressee = Addressee.objects.get(id=id)
+        orders = addressee.order_set.all() # give me all the order associated with this customer
+
+
+        return render(
+            request=request,
+            template_name='confirmation.html',
+            context={
+                'addressee':addressee,
+                'orders':orders,
+            }
+        )
+    def post(self,request,id):
+        if 'edit' in request.POST:
+            
+            order= Order.objects.get(id=id)
+            order_form= OrderForm(request.POST, instance=order)
+            order_form.save()
+            
+            return redirect('order', id)
+
+       
 
             
         
-        return render(
-        request= request,
-        template_name= "confirmation.html",
-        context= {}
-        )
+       
 
 
 

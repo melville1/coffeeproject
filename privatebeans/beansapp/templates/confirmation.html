@@ -9,8 +9,35 @@
 <div class="container">
     <div class="row">
       <div class="col text-center">
+        <h1>Thank you {{addresse.name}}</h1>
+        <table class="table table-sm">
+          <tr>
+            <th>product</th>
+            <th>date</th>
+            <th>status</th>
+            <th>quantity</th>
+          </tr>
+          {% for order in orders %}
+          <tr>
+            <td>{{order.product}}</td>
+            <td>{{order.date}}</td>
+            <td>{{order.status}}</td>
+            <td>{{order.quantity}}</td>
+          </tr>
+          {% endfor %}
+        </table>
+
+        <form method="POST">
+          {% csrf_token %}
+          {{ formset.as_p }}
+        <!-- <input type="submit" name="edit" value="Edit Order " />
+        <input type="submit" name="delete" value="Delete" /> -->
+      </form>
+
+
         
         <a class="btn btn-primary btn-lg" href="{% url 'receipt' %}">Confirm Purchase</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'editorder' 41  %}">Edit Order</a>
       </div>
     </div>
   </div>

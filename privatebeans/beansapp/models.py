@@ -1,23 +1,10 @@
 from django.db import models
 
 # Create your models here.
-
-class Product(models.Model):
-    name = models.CharField(max_length=30)
-    available_quantity = models.IntegerField()
-    description = models.CharField(max_length=200)
-    image = models.ImageField()
-    price = models.FloatField() # different from quantity because price will have decimal because of the cents.
-    order_quantity = models.IntegerField(blank=True,null=True)
-
-
-
-    def __str__(self):
-        return self.name
+class Tag(models.Model):
+    type = models.CharField(max_length=30)
     
-    def get_quantity_and_product(self):
-        
-        return self.price * self.order_quantity
+    
       
 
 # addressee indicates the recipient of the order not necessarily the person placing the order.
@@ -33,22 +20,28 @@ class Addressee(models.Model):
             return self.name
 
 
+class Product(models.Model):
+    types = models.ManyToManyField(Tag)
+    name = models.CharField(max_length=30)
+    description = models.CharField(max_length=200)
+    image = models.ImageField()
+    price = models.FloatField() # different from quantity because price will have decimal because of the cents.
+    
+    def __str__(self):
+        return self.name
+
 class Order(models.Model):
     STATUS = (
         ('Pending','Pending'),
         ('Out for delivery','Out for delivery'),
         ('Delivered','Delivered'),)
-    
-    cart_items = models.ManyToManyField(Product, through="ProductsInOrder")
     addressee = models.ForeignKey(Addressee,on_delete=models.SET_NULL,null=True)
-    total_price = models.FloatField(null=True)
+    product = models.ForeignKey(Product,on_delete=models.SET_NULL,null=True)
     date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=200, null=True, choices=STATUS)
-    # is_confirmed = models.BooleanField(default=False)
-
-class ProductsInOrder(models.Model):
-    product = models.ForeignKey(Product,on_delete=models.CASCADE)
-    order = models.ForeignKey(Order,on_delete=models.CASCADE)
+    status = models.CharField(max_length=200, null=True, choices=STATUS, default='pending')
     quantity = models.IntegerField(null=True)
+    
+#a single order only represents one product, several orders can exist with the same product, meaning that i can orders 1-3 
+# contain the same coffee type. all these orders have to be associated to one addreesee
 
 
