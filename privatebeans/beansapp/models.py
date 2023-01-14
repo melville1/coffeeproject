@@ -44,30 +44,30 @@ class Order(models.Model):
     status = models.CharField(max_length=200, null=True, choices=STATUS, default='pending')
     
     def get_order_items(self):
+        return self.orderitem_set.all()
+  
+
+    def get_total(self):
         orderitems = self.orderitem_set.all()
-        total = sum([item.quantity for item in orderitems])
-        return total 
+        total = 0
+        for item in orderitems:
+            total += item.product.price * item.quantity
+        return total
     
-    def get_order_price(self):
-        orderitems = self.orderitem_set.all()
-        total = sum([item.product.price * item.quantity for item in orderitems])
-        return total 
     
-    def get_item_totals(self):
-        orderitems = self.orderitem_set.all()
-        totals_list =[item.product.price * item.quantity for item in orderitems]
-        return totals_list 
 
 
 
 
 
 class OrderItem(models.Model):
-	product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-	order = models.ForeignKey(Order, on_delete=models.CASCADE, null=True)
-	quantity = models.IntegerField(default=0, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
     
-    
+    def get_total(self):
+        total = self.product.price * self.quantity
+        return total
     
     
     

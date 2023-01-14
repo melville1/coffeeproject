@@ -105,9 +105,9 @@ class ConfirmationView(View):
         # this gets the entire object and all the data that it contains
         orderitems = order.orderitem_set.all() # the "_set.all()" is a django method thats allows us
         # to get everything from orderitem in this example.
-        order_total = Order.get_order_items(order) 
-        order_price = round(Order.get_order_price(order),2)
-        item_totals = Order.get_item_totals(order)
+        item_total = Order.get_order_items(order) 
+        order_price = round(Order.get_total(order),2)
+        
         
         return render(
             request=request,
@@ -115,9 +115,9 @@ class ConfirmationView(View):
             context={
                 'order':order,
                 'items':orderitems,
-                'order_total': order_total,
+                'order_total': item_total,
                 'order_price': order_price,
-                'item_totals': item_totals,
+                
                 
                 
             }
@@ -175,7 +175,6 @@ class HistoryOrderView(View):
     def get (self,request,id):
         addressee = Addressee.objects.get(id=id) 
         addressehistory = addressee.order_set.all()
-        
 
         html_data ={
             'addressee':addressee,

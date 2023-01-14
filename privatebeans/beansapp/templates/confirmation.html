@@ -26,20 +26,14 @@
             <td>{{item.product}}</td>
             <td>{{item.quantity}}</td>
             <td>{{item.product.price}}</td>
+            <td>{{item.get_total}}</td>
+            <td> </td>
             <td></td>
 
           </tr>
           {%endfor%}
           
 
-          
-          <tr>
-            <td></td>
-            <td> </td>
-            <td> </td>
-            <td>{{order_price}}  </td>
-            
-          </tr>
 
         </table>
         </div>
@@ -48,7 +42,13 @@
             <td>{{total}}</td>
           {% endfor %}
         </tr>
-      
+        <tr>
+          <td></td>
+          <td> </td>
+          <td> </td>
+          <td> {{order_price}}  </td>
+          
+        </tr>
         
 
         <form method="POST">
