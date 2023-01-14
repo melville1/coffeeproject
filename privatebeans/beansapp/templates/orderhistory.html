@@ -1,0 +1,15 @@
+{% extends 'main.html'%}
+
+{% block content%}
+<h4></h4>
+<table class="table table-sm">
+    {%for order in addressehistory%}
+    <tr>
+        <td>{{order.product}}</td>
+        <td>{{order.product.name}}</td>
+        <td>{{order.product.quantity}}</td>
+    </tr>
+    {% endfor %}
+</table>   
+
+{% endblock%}

@@ -1,11 +1,66 @@
 {% extends 'main.html'%}
 
-
 {% block content %}
 
+<h2> Order Receipt </h2>
 
-<h2> your order has been placed </h2>
+<p>  </p>
+
+<div class="container">
+    <div class="row">
+      <div class="col text-center">
+        <h1>Thank you {{order.addressee.name}}</h1>
+        <h2> Your Order will be shipped to : {{order.addressee.address}},{{order.addressee.city}}, {{order.addressee.state}}, {{order.addressee.zipcode}}</h2>
+        
+        <h2> Your Order status : {{order.status}}</h2>
+        <div>
+          <table class="table table-sm">
+          <tr>
+            <th>product</th>
+            <!-- <th>date</th>
+            <th>status</th> -->
+            <th>quantity</th>
+            <th>price</th>
+            <th>total</th>
+          </tr>
+          
+          {% for item in items %}
+          <tr>
+            <td>{{item.product}}</td>
+            <td>{{item.quantity}}</td>
+            <td>{{item.product.price}}</td>
+            <td></td>
+
+          </tr>
+          {%endfor%}
+          
+
+          
+          <tr>
+            <td></td>
+            <td> </td>
+            <td> </td>
+            <td>{{order_price}}  </td>
+            
+          </tr>
+
+        </table>
+        </div>
+        <tr>
+          {% for total in item_totals %}
+            <td>{{total}}</td>
+          {% endfor %}
+        </tr>
+      
+        
+
+       
 
 
+    
+        
+      </div>
+    </div>
+  </div>
 
 {% endblock%}

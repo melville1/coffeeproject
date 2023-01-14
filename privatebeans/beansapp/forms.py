@@ -1,13 +1,13 @@
 from django.forms import ModelForm
-from beansapp.models import  Order
+from beansapp.models import  Order,OrderItem
 
 
 
 
 
-class OrderForm(ModelForm):
+class OrderItemForm(ModelForm):
     class Meta:
-        model = Order
+        model = OrderItem
         fields = ['product', 'quantity']
 
 
