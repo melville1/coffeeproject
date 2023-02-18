@@ -211,14 +211,12 @@ class RegistrationView(View):
                 username=request.POST["username"],
                 email=request.POST["email"],
                 password=request.POST["password"],
-                extra_fields={
-                    "first_name": request.POST["first_name"],
-                    "last_name": request.POST["last_name"],
-                    "address": request.POST["address"],
-                    "city": request.POST["city"],
-                    "state": request.POST["state"],
-                    "zipcode": request.POST["zipcode"],
-                }
+                first_name=request.POST["first_name"],
+                last_name=request.POST["last_name"],
+                address=request.POST["address"],
+                city=request.POST["city"],
+                state=request.POST["state"],
+                zipcode=request.POST["zipcode"],
             )
             user.save() # saves it to the database
             
