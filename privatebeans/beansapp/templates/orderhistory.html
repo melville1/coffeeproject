@@ -5,9 +5,11 @@
 <table class="table table-sm">
     {%for order in addressehistory%}
     <tr>
-        <td>{{order.product}}</td>
-        <td>{{order.product.name}}</td>
-        <td>{{order.product.quantity}}</td>
+        <td>{{order.id}}</td>
+        <td>{{order.date}}</td>
+        <td>{{order.status}}</td>
+        <td>{{order.get_total}}</td>
+        <td><a class="btn btn-primary btn-lg" href="{% url 'receipt' order.id %}">View</a></td>
     </tr>
     {% endfor %}
 </table>   

@@ -1,0 +1,21 @@
+{% extends 'main.html'%}
+
+{% block content %}
+<h2> Please Log In </h2>
+
+<form method="post" >
+    {{ registrationform.as_p }}
+    
+    
+    <!-- as_p allows the input boxes to stack on top of one another -->
+    {% csrf_token %}
+   
+    <input class="btn btn-primary btn-lg" type="submit" name="purchase" value="Log In" /> 
+</form>
+
+
+
+
+
+
+{% endblock %}

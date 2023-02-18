@@ -1,4 +1,7 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from phone_field import PhoneField
+
 
 # Create your models here.
 class Tag(models.Model):
@@ -6,17 +9,24 @@ class Tag(models.Model):
 
     def __str__(self):
             return self.type
+
+
     
     
       
 
 # addressee indicates the recipient of the order not necessarily the person placing the order.
-class Addressee(models.Model):
-    name = models.CharField(max_length=30)
-    address = models.CharField(max_length=70)
-    city = models.CharField(max_length=30)
-    state = models.CharField(max_length=30)
+class Addressee(AbstractUser):
+    
+    address = models.CharField(max_length=15)
+    city = models.CharField(max_length=15)
+    state = models.CharField(max_length=15)
     zipcode = models.IntegerField()
+    phone_number = PhoneField(blank=True, null=True)
+    date_of_birth = models.DateField(null=True)
+    
+
+
 
     
     def __str__(self):
@@ -62,7 +72,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
-    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE,null=True)
     quantity = models.IntegerField(default=0, null=True, blank=True)
     
     def get_total(self):

@@ -1,56 +1,56 @@
-{% extends 'main.html'%}
 
-{% block content %}
+{% extends 'main.html' %}
 
-<h2> Order Receipt </h2>
+{% block content%}
 
-<p>  </p>
+{% load static %} 
+<center>
+<h1>Receipt</h1>
 
-<div class="container">
-    <div class="row">
-      <div class="col text-center">
-        <h1>Thank you {{order.addressee.name}}</h1>
-        <h2> Your Order will be shipped to : {{order.addressee.address}},{{order.addressee.city}}, {{order.addressee.state}}, {{order.addressee.zipcode}}</h2>
+<h2>Order Number: {{order.id}}</h2>
+
+<h2>{{order.date}}</h2>
+
+<h2>{{order.status}}</h2>
+<table class="table table-sm">
+    <tr>
+      <th>Product</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Quantity</th>
+      <th>Total</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+      <td>{{item.product}}</td>
+      <td>{{order.date}}</td>
+      <td>{{order.status}}</td>
+      <td>{{item.quantity}}</td>
+      <td>${{item.get_total}}0</td>
+    </tr>
+    {% endfor %}
         
-        <h2> Your Order status : {{order.status}}</h2>
-        <div>
-          <table class="table table-sm">
-          <tr>
-            <th>product</th>
-            <!-- <th>date</th>
-            <th>status</th> -->
-            <th>quantity</th>
-            <th>price</th>
-            <th>total</th>
-          </tr>
-          
-          {% for item in items %}
-          <tr>
-            <td>{{item.product}}</td>
-            <td>{{item.quantity}}</td>
-            <td>{{item.product.price}}</td>
-            <td></td>
+</table>
+        <h3>Total Price: ${{order.get_total}}0 </h3>
+</center>
 
-          </tr>
-          {%endfor%}
-          
 
-          
-          <tr>
-            <td></td>
-            <td> </td>
-            <td> </td>
-            <td>{{order_price}}  </td>
-            
-          </tr>
+<h6>Thank you {{order.addressee.first_name}}{{order.addressee.last_name}}</h6>
+<h6> Order Shipped To:</h6>
+<table>
+<tr>
+<td> {{order.addressee.address}}</td>
+<td> {{order.addressee.city}}</td>
+<td> {{order.addressee.state}}</td>
+<td> {{order.addressee.zipcode}}</td>
 
-        </table>
-        </div>
-        <tr>
-          {% for total in item_totals %}
-            <td>{{total}}</td>
-          {% endfor %}
-        </tr>
+
+</tr>
+
+
+</table>
+
+{% endblock %}
       
         
 
@@ -59,8 +59,4 @@
 
     
         
-      </div>
-    </div>
-  </div>
-
-{% endblock%}
+   
