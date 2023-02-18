@@ -1,23 +1,31 @@
 from django.forms import ModelForm
-from beansapp.models import ProductsInOrder, Order
+from beansapp.models import  Order,OrderItem,Addressee
 
 
 
 
+
+class OrderItemForm(ModelForm):
+    class Meta:
+        model = OrderItem
+        fields = ['product', 'quantity']
 
 class OrderForm(ModelForm):
     class Meta:
         model = Order
-        fields = '__all__'
+        fields = ['addressee']
 
-
-
-
-
-
-class ProductsInOrderForm(OrderForm):
+class AddresseeForm(ModelForm):
     class Meta:
-        model = ProductsInOrder
-        fields = '__all__'
+        model= Addressee
+        fields=['first_name','last_name','address','city','state','zipcode','email','phone_number','date_of_birth','password','username'] 
+
+class RegistrationForm(ModelForm):
+    class Meta:
+        model= Addressee
+        fields=['username','password',]
+
+
+
 
 

@@ -1,54 +1,86 @@
+from django.contrib.auth.models import AbstractUser
 from django.db import models
+from phone_field import PhoneField
+
 
 # Create your models here.
-
-class Product(models.Model):
-    name = models.CharField(max_length=30)
-    available_quantity = models.IntegerField()
-    description = models.CharField(max_length=200)
-    image = models.ImageField()
-    price = models.FloatField() # different from quantity because price will have decimal because of the cents.
-    order_quantity = models.IntegerField(blank=True,null=True)
-
-
+class Tag(models.Model):
+    type = models.CharField(max_length=30)
 
     def __str__(self):
-        return self.name
+            return self.type
+
+
     
-    def get_quantity_and_product(self):
-        
-        return self.price * self.order_quantity
+    
       
 
 # addressee indicates the recipient of the order not necessarily the person placing the order.
-class Addressee(models.Model):
-    name = models.CharField(max_length=30)
-    address = models.CharField(max_length=70)
-    city = models.CharField(max_length=30)
-    state = models.CharField(max_length=30)
+class Addressee(AbstractUser):
+    
+    address = models.CharField(max_length=15)
+    city = models.CharField(max_length=15)
+    state = models.CharField(max_length=15)
     zipcode = models.IntegerField()
+    phone_number = PhoneField(blank=True, null=True)
+    date_of_birth = models.DateField(null=True)
+    
+
+
 
     
     def __str__(self):
             return self.name
 
 
+class Product(models.Model):
+    types = models.ManyToManyField(Tag)
+    name = models.CharField(max_length=30)
+    description = models.CharField(max_length=200)
+    image = models.ImageField()
+    price = models.FloatField() 
+    
+    def __str__(self):
+        return self.name
+
 class Order(models.Model):
     STATUS = (
         ('Pending','Pending'),
         ('Out for delivery','Out for delivery'),
         ('Delivered','Delivered'),)
-    
-    cart_items = models.ManyToManyField(Product, through="ProductsInOrder")
     addressee = models.ForeignKey(Addressee,on_delete=models.SET_NULL,null=True)
-    total_price = models.FloatField(null=True)
+   
     date = models.DateTimeField(auto_now_add=True)
-    status = models.CharField(max_length=200, null=True, choices=STATUS)
-    # is_confirmed = models.BooleanField(default=False)
+    status = models.CharField(max_length=200, null=True, choices=STATUS, default='pending')
+    
+    def get_order_items(self):
+        return self.orderitem_set.all()
+  
 
-class ProductsInOrder(models.Model):
-    product = models.ForeignKey(Product,on_delete=models.CASCADE)
-    order = models.ForeignKey(Order,on_delete=models.CASCADE)
-    quantity = models.IntegerField(null=True)
+    def get_total(self):
+        orderitems = self.orderitem_set.all()
+        total = 0
+        for item in orderitems:
+            total += item.product.price * item.quantity
+        return total
+    
+    
 
 
+
+
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE,null=True)
+    quantity = models.IntegerField(default=0, null=True, blank=True)
+    
+    def get_total(self):
+        total = self.product.price * self.quantity
+        return total
+    
+    
+    
+	
+
+	

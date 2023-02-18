@@ -1,11 +1,62 @@
-{% extends 'main.html'%}
+
+{% extends 'main.html' %}
+
+{% block content%}
+
+{% load static %} 
+<center>
+<h1>Receipt</h1>
+
+<h2>Order Number: {{order.id}}</h2>
+
+<h2>{{order.date}}</h2>
+
+<h2>{{order.status}}</h2>
+<table class="table table-sm">
+    <tr>
+      <th>Product</th>
+      <th>Date</th>
+      <th>Status</th>
+      <th>Quantity</th>
+      <th>Total</th>
+    </tr>
+    {% for item in items %}
+    <tr>
+      <td>{{item.product}}</td>
+      <td>{{order.date}}</td>
+      <td>{{order.status}}</td>
+      <td>{{item.quantity}}</td>
+      <td>${{item.get_total}}0</td>
+    </tr>
+    {% endfor %}
+        
+</table>
+        <h3>Total Price: ${{order.get_total}}0 </h3>
+</center>
 
 
-{% block content %}
+<h6>Thank you {{order.addressee.first_name}}{{order.addressee.last_name}}</h6>
+<h6> Order Shipped To:</h6>
+<table>
+<tr>
+<td> {{order.addressee.address}}</td>
+<td> {{order.addressee.city}}</td>
+<td> {{order.addressee.state}}</td>
+<td> {{order.addressee.zipcode}}</td>
 
 
-<h2> your order has been placed </h2>
+</tr>
 
 
+</table>
 
-{% endblock%}
+{% endblock %}
+      
+        
+
+       
+
+
+    
+        
+   

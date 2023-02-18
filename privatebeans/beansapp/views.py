@@ -1,11 +1,12 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from beansapp.models import Product,Order, Addressee, ProductsInOrder
-from beansapp.forms import ProductsInOrderForm
-from django.forms import formset_factory
-from. forms import ProductsInOrderForm
+from beansapp.models import Order, Addressee,OrderItem
+from .forms import OrderForm,AddresseeForm,RegistrationForm
+from django.forms import inlineformset_factory
+
 
 # Create your views here.
+
 class HomeView(View):
     def get (self,request):
 
@@ -19,43 +20,23 @@ class HomeView(View):
         context= {}
         )
 
+
 class OrderView(View):
-    product_count = Product.objects.all().count()
-    product_form_set = formset_factory(ProductsInOrderForm, extra=product_count)
-
-    def get (self,request,):
-
-        product_form_set = formset_factory(ProductsInOrderForm, extra=OrderView.product_count)
+   
+    def get (self,request):
+                                    # The orders will be associated with the Order table
+                                    # second arguments specifies which table it will use to make forms
+                                    # we are then able to make one form from these 2 tables.
+        OrderItemFormset = inlineformset_factory(Order,OrderItem, fields=['product','quantity'])
+        #inlineformfactory allow you to create multiple forms at once. makes it more efficient.
+        # # the form will only only contain attributes that are contain within orderitem table 
+        formset = OrderItemFormset() #because line 28  is returning a function we have paranthesis.
+        form = OrderForm()
         
-        
-        products = Product.objects.all()
-       
-        formset = product_form_set()
-        print(formset)
-
-        # testform = ProductsInOrderForm
-        
-         # total = 0
-        # for product in products:
-        #     total += product.price
-        # total = round(total,2)
-        # # print(total)
-        # get_quantity_and_product
-        
-        # for product in products:
-        #     product = product * product.price
-
         html_data ={ 
-            
-            
-            'products': products,
-            # 'testform': testform,
-            
-            
-            # 'total': total,
-            'formset': formset
-            
-        }
+            'formset':formset,
+            'form': form,
+            }
 
 
         return render(
@@ -63,48 +44,119 @@ class OrderView(View):
         template_name= "order.html",
         context= html_data
         )
-    def post(self,request):
-        product_form_set = formset_factory(ProductsInOrderForm, extra=OrderView.product_count-1)
-        print(request.POST)
-        formset = product_form_set(request.POST, request.FILES)   
-        if formset.is_valid():
-            for form in formset:
-                if form.cleaned_data:
-                    products = form.save(commit=False)
-                    products.save()
-                    
 
-        
-        redirect('confirmation')
+    def post(self,request):
+        OrderItemFormset = inlineformset_factory(Order,OrderItem, fields=['product','quantity'])
+        customer = request.POST["addressee"]
+        addressee = Addressee.objects.get(id=customer) # we are getting the addresse - a set up for the following line
+        order = Order.objects.create(addressee=addressee) # order is created connecting it to the addressee
+        formset = OrderItemFormset(request.POST, instance=order)
+        # we are calling the OrderItemFormset and filling it with the post data and then associating with the 
+        # order from line 47 the "instance" in this case means associating with the order
+        # what is happening here is that line 45 calls the form because the post needs it, then 
+        # we get the adresse id this is the set up for the follwing line (47)because we will then 
+        # create an order and associate it with the addressee and his/her info
+        #line 48 then passes the data that was created from the addresse which he created in the post and associates 
+        # to the order from line 47.
+        if formset.is_valid():
+            formset.save() # this adds the data to the database that come from the formset
+        return redirect('confirmation', order.id ) # this redirects us to confirmation 
+        # the second argument "create.id" grabs the id from the order it does this because an object was created
+        # from line 47, therefore we not only access to the id but any other attribute that object may contain
+        # keep in mind this order.id now contains data
+
+
+class EditView(View):
+
+    def get (self,request,id):
+        order = Order.objects.get(id=id)
+        OrderFormset = inlineformset_factory(Order,OrderItem, fields=['product','quantity'],)
+        formset = OrderFormset(instance=order)
+    # the order id is from the previous view here we are accessing and displaying that order 
+    # which is why you see it prefilled. 
+        html_data ={ 
+            'formset':formset
+            }
+
+
+        return render(
+        request= request,
+        template_name= "order.html",
+        context= html_data
+        )
+
+       
+    def post(self,request,id):
+        order= Order.objects.get(id=id) # this retrieves the order but has the old data 
+        OrderFormset = inlineformset_factory(Order,OrderItem, fields=['product','quantity'],) # making the formset
+        formset = OrderFormset(request.POST, instance=order) 
+        #line 87 whatever new data was put in the post whether it remains the same or not gets resent to the form
+        # associated with that orderid 
+        if formset.is_valid():
+            formset.save() # saves it to the database
+        return redirect('confirmation', order.id ) # redirects us to the confirmation with the orderid associated with
 
 
 class ConfirmationView(View):
-    def get (self,request):
-        # order = Order.objects.get(id=)
-
-            
+    def get (self,request,id): # the id is like a book but only contains the title
+        order = Order.objects.get(id=id) # we write this again because we need to acceess the book ( in this case order)
+        # the order.objects.get will get me the order associated with id
+        # this gets the entire object and all the data that it contains
+        orderitems = OrderItem.objects.filter(order=order) # the "_set.all()" is a django method thats allows us
+        # to get everything from orderitem in this example.
+        item_total = Order.get_order_items(order) 
+        order_price = round(Order.get_total(order),2)
+        
         
         return render(
-        request= request,
-        template_name= "confirmation.html",
-        context= {}
+            request=request,
+            template_name='confirmation.html',
+            context={
+                'order':order,
+                'items':orderitems,
+                'order_total': item_total,
+                'order_price': order_price,
+                
+                
+                
+            }
         )
-
-
-
-class ReceiptView(View):
-    def get (self,request):
+    def post(self,request,id):
+        order = Order.objects.get(id=id)
         
+        if 'delete' in request.POST:
+            order.delete()
+            return redirect('home')
+               
+
+            
+class ReceiptView(View):
+    def get (self,request,id):
+        order = Order.objects.get(id=id) 
+        orderitems = order.orderitem_set.all()
+        item_total = Order.get_order_items(order)
+        order_price = round(Order.get_total(order),2) 
+        
+        
+        html_data={
+            'order':order,
+                'items':orderitems,
+                'order_total': item_total,
+                'order_price': order_price, 
+            
+            }
         
         return render(
         request= request,
         template_name= "receipt.html",
-        context= {}
+        context= html_data
         )
 
 
 
 class ProductView(View):
+
+
     def get (self,request):
         
         
@@ -113,3 +165,86 @@ class ProductView(View):
         template_name= "menu.html",
         context= {}
         )
+
+class HistoryOrderView(View):
+    def get (self,request,id):
+        addressee = Addressee.objects.get(id=id) 
+        addressehistory = Order.objects.filter(addressee=addressee)
+
+        html_data ={
+            'addressee':addressee,
+            'addressehistory': addressehistory,
+
+        }
+
+        return render(
+        request= request,
+        template_name= "orderhistory.html",
+        context= html_data
+        )
+    
+class RegistrationView(View):
+    def get (self,request):
+
+        registrationform = AddresseeForm()
+
+        html_data ={ 
+            'registrationform': registrationform,
+            }
+
+        
+
+
+        
+        return render(
+        request= request,
+        template_name= "registration.html",
+        context= html_data
+        )
+    
+    def post(self,request):
+        registrationform = AddresseeForm(request.POST)
+        
+        # if registrationform.is_valid():
+        if True:
+            user = Addressee.objects.create_user(
+                username=request.POST["username"],
+                email=request.POST["email"],
+                password=request.POST["password"],
+                first_name=request.POST["first_name"],
+                last_name=request.POST["last_name"],
+                address=request.POST["address"],
+                city=request.POST["city"],
+                state=request.POST["state"],
+                zipcode=request.POST["zipcode"],
+            )
+            user.save() # saves it to the database
+            
+
+        return redirect('login', )
+
+    
+class LoginView(View):
+    def get (self,request):
+
+        registrationform = RegistrationForm()
+
+        html_data ={ 
+            'registrationform': registrationform,
+            }
+
+        
+        return render(
+        request= request,
+        template_name= "login.html",
+        context= html_data,
+        )
+    
+
+    def post(self,request):
+            registrationform = RegistrationForm(request.POST)
+            
+            # saves it to the database
+                
+
+            return redirect('order' )
