@@ -21,11 +21,13 @@ class Addressee(AbstractUser):
     address = models.CharField(max_length=15)
     city = models.CharField(max_length=15)
     state = models.CharField(max_length=15)
-    zipcode = models.IntegerField()
+    zipcode = models.IntegerField(null=True)
     phone_number = PhoneField(blank=True, null=True)
     date_of_birth = models.DateField(null=True)
     
-
+    @property
+    def name(self):
+         return self.first_name + ' ' + self.last_name
 
 
     
@@ -37,7 +39,7 @@ class Product(models.Model):
     types = models.ManyToManyField(Tag)
     name = models.CharField(max_length=30)
     description = models.CharField(max_length=200)
-    image = models.ImageField()
+    image = models.ImageField(null=True,blank=True)
     price = models.FloatField() 
     
     def __str__(self):

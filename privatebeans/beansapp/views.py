@@ -3,12 +3,20 @@ from django.views import View
 from beansapp.models import Order, Addressee,OrderItem
 from .forms import OrderForm,AddresseeForm,RegistrationForm
 from django.forms import inlineformset_factory
-
+from django.contrib.auth import views as auth_views
 
 # Create your views here.
 
 class HomeView(View):
     def get (self,request):
+
+        username = request.user.username
+        currentuser  = request.user
+
+        html_data ={ 
+        'username':username,
+        'currentuser' :currentuser
+            }
 
         
 
@@ -17,7 +25,7 @@ class HomeView(View):
         return render(
         request= request,
         template_name= "home.html",
-        context= {}
+        context= html_data
         )
 
 
@@ -31,11 +39,15 @@ class OrderView(View):
         #inlineformfactory allow you to create multiple forms at once. makes it more efficient.
         # # the form will only only contain attributes that are contain within orderitem table 
         formset = OrderItemFormset() #because line 28  is returning a function we have paranthesis.
-        form = OrderForm()
+        username = request.user.username
+        currentuser  = request.user
+        # AnonymousUser = isAnonymousUser
+        
         
         html_data ={ 
             'formset':formset,
-            'form': form,
+            'username':username,
+            'currentuser' :currentuser
             }
 
 
@@ -47,8 +59,7 @@ class OrderView(View):
 
     def post(self,request):
         OrderItemFormset = inlineformset_factory(Order,OrderItem, fields=['product','quantity'])
-        customer = request.POST["addressee"]
-        addressee = Addressee.objects.get(id=customer) # we are getting the addresse - a set up for the following line
+        addressee = request.user # we are getting the addresse - a set up for the following line
         order = Order.objects.create(addressee=addressee) # order is created connecting it to the addressee
         formset = OrderItemFormset(request.POST, instance=order)
         # we are calling the OrderItemFormset and filling it with the post data and then associating with the 
@@ -167,8 +178,8 @@ class ProductView(View):
         )
 
 class HistoryOrderView(View):
-    def get (self,request,id):
-        addressee = Addressee.objects.get(id=id) 
+    def get (self,request):
+        addressee = request.user
         addressehistory = Order.objects.filter(addressee=addressee)
 
         html_data ={
@@ -221,30 +232,8 @@ class RegistrationView(View):
             user.save() # saves it to the database
             
 
-        return redirect('login', )
-
+        return redirect(to='login', )
     
-class LoginView(View):
-    def get (self,request):
-
-        registrationform = RegistrationForm()
-
-        html_data ={ 
-            'registrationform': registrationform,
-            }
-
-        
-        return render(
-        request= request,
-        template_name= "login.html",
-        context= html_data,
-        )
     
 
-    def post(self,request):
-            registrationform = RegistrationForm(request.POST)
-            
-            # saves it to the database
-                
-
-            return redirect('order' )
+    
