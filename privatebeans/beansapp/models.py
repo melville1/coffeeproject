@@ -10,10 +10,14 @@ class Tag(models.Model):
     def __str__(self):
             return self.type
 
-
-    
-    
-      
+class Guest(models.Model):
+    first_name = models.CharField(max_length=15,null=True,blank=True)
+    last_name = models.CharField(max_length=15,null=True,blank=True)
+    address = models.CharField(max_length=15,null=True,blank=True)
+    city = models.CharField(max_length=15,null=True,blank=True)
+    state = models.CharField(max_length=15,null=True,blank=True)
+    zipcode = models.IntegerField(null=True)
+    phone_number = PhoneField(blank=True, null=True)        
 
 # addressee indicates the recipient of the order not necessarily the person placing the order.
 class Addressee(AbstractUser):
@@ -23,7 +27,7 @@ class Addressee(AbstractUser):
     state = models.CharField(max_length=15)
     zipcode = models.IntegerField(null=True)
     phone_number = PhoneField(blank=True, null=True)
-    date_of_birth = models.DateField(null=True)
+    
     
     @property
     def name(self):
@@ -51,6 +55,7 @@ class Order(models.Model):
         ('Out for delivery','Out for delivery'),
         ('Delivered','Delivered'),)
     addressee = models.ForeignKey(Addressee,on_delete=models.SET_NULL,null=True)
+    guest = models.ForeignKey(Guest,on_delete=models.SET_NULL,null=True)
    
     date = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=200, null=True, choices=STATUS, default='pending')

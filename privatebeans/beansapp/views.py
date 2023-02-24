@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from beansapp.models import Order, Addressee,OrderItem
-from .forms import OrderForm,AddresseeForm,RegistrationForm
+from beansapp.models import Order, Addressee,OrderItem,Guest
+from .forms import OrderForm,AddresseeForm,RegistrationForm,GuestShippingForm
 from django.forms import inlineformset_factory
 from django.contrib.auth import views as auth_views
 
@@ -76,6 +76,39 @@ class OrderView(View):
         # from line 47, therefore we not only access to the id but any other attribute that object may contain
         # keep in mind this order.id now contains data
 
+class GuestView(View):
+   
+    def get (self,request):
+                                
+        OrderItemFormset = inlineformset_factory(Order,OrderItem, fields=['product','quantity'])
+        
+        formset = OrderItemFormset() 
+        username = request.user.username
+        currentuser  = request.user
+        # AnonymousUser = isAnonymousUser
+        print(currentuser)
+        
+        html_data ={ 
+            'formset':formset,
+            'username':username,
+            'currentuser' :currentuser
+            }
+
+
+        return render(
+        request= request,
+        template_name= "order.html",
+        context= html_data
+        )
+
+    def post(self,request):
+        OrderItemFormset = inlineformset_factory(Order,OrderItem, fields=['product','quantity'])
+        order = Order.objects.create() 
+        formset = OrderItemFormset(request.POST,instance=order)
+       
+        if formset.is_valid():
+            formset.save() # 
+        return redirect('guest_shipping', order.id) 
 
 class EditView(View):
 
@@ -202,10 +235,12 @@ class RegistrationView(View):
         html_data ={ 
             'registrationform': registrationform,
             }
-
-        
-
-
+        # try:
+        #     order= request.POST['order']
+        # except:
+        #     order= None
+        # if order: 
+        #     html_data ['order']= order
         
         return render(
         request= request,
@@ -230,10 +265,59 @@ class RegistrationView(View):
                 zipcode=request.POST["zipcode"],
             )
             user.save() # saves it to the database
+        # try:
+        #     order= request.POST['order']
+        # except:
+        #     order= None
+        # if not order:       
+
+            return redirect(to='login' )
+        
+        # else: 
+        #     # return redirect('confirmation', order.id )
+
+    
+class GuestShippingView(View):
+    def get(self,request,id):
+        order = Order.objects.get(id=id)
+        
+        currentuser  = request.user
+
+        form = GuestShippingForm(instance=order)
+        
+       
+        html_data ={ 
+            'form':form,
             
+            'currentuser' :currentuser
+            }
 
-        return redirect(to='login', )
-    
-    
 
-    
+        return render(
+        request= request,
+        template_name= "guest_shipping.html",
+        context= html_data
+        )
+
+    def post(self,request,id):
+        order = Order.objects.get(id=id)
+        # if not 'create_account' in request.POST:
+
+        guest = Guest.objects.create() # object id is created only
+        form = GuestShippingForm(request.POST,instance=guest) #the data from the form gets saved to the guest id that was created in the previous line.
+        # if form.is_valid():
+        #     if form.username and form.password:
+        form.save() 
+        order.guest = guest #this is the magic line, this line associates the order with the guest
+        # the way it is done is that line 292 creates the guest object id. order.guest = guest goes to the order
+        # table and assigns the guest attribute to the id.
+        order.save()
+        
+
+        return redirect('confirmation',order.id)
+        # else: 
+        #     context= {'order':order}
+        #     return redirect('registration',context)
+
+         
+      

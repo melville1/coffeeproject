@@ -1,5 +1,5 @@
 from django.urls import path
-from beansapp.views import HomeView,OrderView,ConfirmationView,ReceiptView,ProductView,EditView,HistoryOrderView,RegistrationView
+from beansapp.views import *
 from django.conf.urls import include
 from django.contrib.auth import views as auth_views
 
@@ -17,5 +17,7 @@ urlpatterns = [
     # path('accounts/', include('django.contrib.auth.urls'),),
     path('login/', auth_views.LoginView.as_view(template_name='login.html'),name = 'login'),
     path('accounts/logout/', auth_views.LogoutView.as_view(template_name='logout.html'),name = 'logout'),
+    path('guest_view/' , GuestView.as_view(), name='guest' ),
+    path('guest_shipping/<int:id>' , GuestShippingView.as_view(), name='guest_shipping' ),
 ]
 
