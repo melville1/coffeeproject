@@ -1,31 +1,30 @@
-
-    {% extends 'main.html'%}
+{% extends 'main.html'%}
       
     
     
-    {% block content%}
-    <h1> Welcome to CoolBeans </h1>
-      
-      
+{% block content%}
+<h1> Welcome to CoolBeans </h1>
+  
+  
+    
+  
+{% if not loggedin %}
+    <div class="container">
+    <div class="row">
+      <div class="col text-center">
         
-      
-    {% if not username %}
-        <div class="container">
-        <div class="row">
-          <div class="col text-center">
-            
-            <!-- <a class="btn btn-primary btn-lg " href="{% url 'order' %}">Place Order</a> -->
-            <a class="btn btn-primary btn-lg " href="{% url 'registration' %}">Registration</a>
-            
-            <a class="btn btn-primary btn-lg " href="{% url 'login' %}">Log In</a>
-            
-            <a class="btn btn-primary btn-lg " href="{% url 'guest' %}">Continue as Guest</a> 
-          </div>
-         
-        </div>
+        <!-- <a class="btn btn-primary btn-lg " href="{% url 'order' %}">Place Order</a> -->
+        <a class="btn btn-primary btn-lg " href="{% url 'registration' %}">Registration</a>
+        
+        <a class="btn btn-primary btn-lg " href="{% url 'login' %}">Log In</a>
+        
+        <a class="btn btn-primary btn-lg " href="{% url 'guest' %}">Continue as Guest</a> 
       </div>
-    {%else %}
-    <a class="btn btn-primary btn-lg " href="{% url 'order' %}">Place Order</a>
-      {% endif %}
-      {% endblock %}
+     
+    </div>
+  </div>
+{%else %}
+<a class="btn btn-primary btn-lg " href="{% url 'order' %}">Place Order</a>
+  {% endif %}
+  {% endblock %}
 
