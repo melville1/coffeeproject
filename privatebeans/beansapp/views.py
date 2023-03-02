@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from beansapp.models import Order, Addressee,OrderItem,Guest
-from .forms import OrderForm,AddresseeForm,RegistrationForm,GuestShippingForm
+from .forms import AddresseeForm,GuestShippingForm,NewUserForm
 from django.forms import inlineformset_factory
 from django.contrib.auth import views as auth_views
+from django.contrib.auth import authenticate,login
+import re
 
 # Create your views here.
 
@@ -228,19 +230,20 @@ class HistoryOrderView(View):
         )
     
 class RegistrationView(View):
-    def get (self,request):
-
+    def get (self,request,id=None):
+        
+        if id:     # this line of code is not necessary from 233-238
+            order = Order.objects.get(id=id)
+            
+        else:
+            order= None
+                
         registrationform = AddresseeForm()
 
         html_data ={ 
             'registrationform': registrationform,
             }
-        # try:
-        #     order= request.POST['order']
-        # except:
-        #     order= None
-        # if order: 
-        #     html_data ['order']= order
+      
         
         return render(
         request= request,
@@ -248,8 +251,8 @@ class RegistrationView(View):
         context= html_data
         )
     
-    def post(self,request):
-        registrationform = AddresseeForm(request.POST)
+    def post(self,request,id=None):
+        form = AddresseeForm(request.POST)
         
         # if registrationform.is_valid():
         if True:
@@ -265,16 +268,26 @@ class RegistrationView(View):
                 zipcode=request.POST["zipcode"],
             )
             user.save() # saves it to the database
-        # try:
-        #     order= request.POST['order']
-        # except:
-        #     order= None
-        # if not order:       
-
-            return redirect(to='login' )
+    
+            login(request,user)
+            # login(request, new_user)
+            # return redirect(to='order' )
+        if id:
+            order= Order.objects.get(id=id) # when guest registers it hits this line because the order is already created
+           
+        else:
+            order= None
+        if not order :       
+            
+            return redirect(to='order' )
         
-        # else: 
-        #     # return redirect('confirmation', order.id )
+        else: 
+            order.addressee = user #when guest registers assign to order
+            order.guest = None
+            order.save()
+            return redirect('confirmation', order.id )
+        
+ 
 
     
 class GuestShippingView(View):
@@ -301,23 +314,48 @@ class GuestShippingView(View):
 
     def post(self,request,id):
         order = Order.objects.get(id=id)
-        # if not 'create_account' in request.POST:
+        forminfo = {}
+        
+      
+                        
+        
+        if not 'create_account' in request.POST:
+            guest = Guest.objects.create() # object id is created only
+            form = GuestShippingForm(request.POST,instance=guest)
+            form.save() 
+            order.guest = guest #this is the magic line, this line associates the order with the guest
+                # the way it is done is that line 292 creates the guest object id. order.guest = guest goes to the order
+                # table and assigns the guest attribute to the id.
+            order.save()
 
-        guest = Guest.objects.create() # object id is created only
-        form = GuestShippingForm(request.POST,instance=guest) #the data from the form gets saved to the guest id that was created in the previous line.
-        # if form.is_valid():
-        #     if form.username and form.password:
-        form.save() 
-        order.guest = guest #this is the magic line, this line associates the order with the guest
-        # the way it is done is that line 292 creates the guest object id. order.guest = guest goes to the order
-        # table and assigns the guest attribute to the id.
-        order.save()
+        
+            return redirect('confirmation',order.id)
+        else:
+            
+
+            return redirect('new_user',order.id)
         
 
-        return redirect('confirmation',order.id)
-        # else: 
-        #     context= {'order':order}
-        #     return redirect('registration',context)
+class NewUserView(View):
+    def get(self,request,id=None):
+        form = NewUserForm()
+        
+        return render(
+        request= request,
+        template_name= "new_user.html",
+        context= {'form':form},
+        )
+    
+    # def post(self,request,id=None):
+    #     form = NewUserForm(request.POST)
+    #     order = Order.objects.get(id=id)
+    #     addressee = order.addressee
+
+    #     addressee.username = request.POST['username']
+    #     addressee.password = request.POST['password']
+    #     addressee.email = request.POST['email']
+
+    #     return redirect('confirmation', order.id )
 
          
       

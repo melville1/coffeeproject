@@ -18,17 +18,18 @@ class OrderForm(ModelForm):
 class AddresseeForm(ModelForm):
     class Meta:
         model= Addressee
-        fields=['first_name','last_name','address','city','state','zipcode','email','phone_number','password','username'] 
+        fields=['first_name','last_name','address','city','state','zipcode','phone_number','username','password','email'] 
 
-class RegistrationForm(ModelForm):
+
+
+class NewUserForm(ModelForm):
     class Meta:
         model= Addressee
-        fields=['username','password',]
+        fields=['username','password','email']
 
 class GuestShippingForm(ModelForm):
     class Meta:
         model = Guest
         fields = "__all__"
-
 
 
