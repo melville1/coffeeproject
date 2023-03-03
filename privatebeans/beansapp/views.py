@@ -151,7 +151,7 @@ class ConfirmationView(View):
         orderitems = OrderItem.objects.filter(order=order) # the "_set.all()" is a django method thats allows us
         # to get everything from orderitem in this example.
         item_total = Order.get_order_items(order) 
-        order_price = round(Order.get_total(order),2)
+        order_price = Order.get_total(order)
         
         
         return render(

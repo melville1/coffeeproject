@@ -69,7 +69,7 @@ class Order(models.Model):
         total = 0
         for item in orderitems:
             total += item.product.price * item.quantity
-        return total
+        return round(total,2)
     
     
 

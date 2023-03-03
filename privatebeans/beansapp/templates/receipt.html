@@ -4,15 +4,32 @@
 {% block content%}
 
 {% load static %} 
-<center>
-<h1>Receipt</h1>
+
+
+<style>
+  .container{
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+  }
+  .info{
+    background-color: burlywood;
+    color: white;
+  }
+  p{
+    margin: 0;
+  }
+</style>
+
+<div class="container">
+  <h1>Receipt</h1>
 
 <h2>Order Number: {{order.id}}</h2>
 
 <h2>{{order.date}}</h2>
 
 <h2>{{order.status}}</h2>
-<table class="table table-sm">
+<table class="info table table-sm text-center">
     <tr>
       <th>Product</th>
       <th>Date</th>
@@ -28,28 +45,22 @@
       <td>{{item.quantity}}</td>
       <td>${{item.get_total}}0</td>
     </tr>
-    {% endfor %}
-        
+    {% endfor %}    
 </table>
-        <h3>Total Price: ${{order.get_total}}0 </h3>
-</center>
+     
+<h3>Total Price: ${{order.get_total}}0 </h3>
+</div>   
 
 
 <h6>Thank you {{order.addressee.first_name}}{{order.addressee.last_name}}</h6>
 <h6> Order Shipped To:</h6>
-<table>
-<tr>
-<td> {{order.addressee.address}}</td>
-<td> {{order.addressee.city}}</td>
-<td> {{order.addressee.state}}</td>
-<td> {{order.addressee.zipcode}}</td>
-
-
-</tr>
-
-
-</table>
-
+{% if username %}
+  <p>{{order.addressee.address}}</p>
+  <p>{{order.addressee.city}}, {{order.addressee.state}}{{order.addressee.zipcode}}</p>
+{% else %}
+   <p>{{order.guest.address}}</p>
+   <p>{{order.guest.city}}, {{order.guest.state}}{{order.guest.zipcode}}</p>
+{% endif %}
 {% endblock %}
       
         
