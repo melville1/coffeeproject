@@ -12,9 +12,18 @@
     align-items: center;
     flex-direction: column;
   }
-  .info{
-    background-color: burlywood;
+  .info,.shipping{
+    background-color: #40250E;
     color: white;
+    border: 1px solid white;
+  }
+  .shipping{
+    display: inline-block;
+    padding: 15px;
+    margin-top: 50px;
+    position: relative;
+    left: 800px;
+    bottom: -45px;
   }
   p{
     margin: 0;
@@ -43,27 +52,30 @@
       <td>{{order.date}}</td>
       <td>{{order.status}}</td>
       <td>{{item.quantity}}</td>
-      <td>${{item.get_total}}0</td>
+      <td>${{item.get_total}}</td>
     </tr>
     {% endfor %}    
 </table>
      
-<h3>Total Price: ${{order.get_total}}0 </h3>
-</div>   
+<h3>Total Price: ${{order.get_total}}</h3>
+  
+</div>  
+
+<div class="shipping">
+  <h6>Thank you {{order.addressee.first_name}}{{order.addressee.last_name}}</h6>
+  <h6> Order Shipped To:</h6>
+  {% if username %}
+    <p>{{order.addressee.address}}</p>
+    <p>{{order.addressee.city}}, {{order.addressee.state}}{{order.addressee.zipcode}}</p>
+  {% else %}
+     <p>{{order.guest.address}}</p>
+     <p>{{order.guest.city}}, {{order.guest.state}}{{order.guest.zipcode}}</p>
+  {% endif %}
+  
+  </div>   
 
 
-<h6>Thank you {{order.addressee.first_name}}{{order.addressee.last_name}}</h6>
-<h6> Order Shipped To:</h6>
-{% if username %}
-  <p>{{order.addressee.address}}</p>
-  <p>{{order.addressee.city}}, {{order.addressee.state}}{{order.addressee.zipcode}}</p>
-{% else %}
-   <p>{{order.guest.address}}</p>
-   <p>{{order.guest.city}}, {{order.guest.state}}{{order.guest.zipcode}}</p>
-{% endif %}
-{% endblock %}
-      
-        
+ {% endblock %}       
 
        
 
