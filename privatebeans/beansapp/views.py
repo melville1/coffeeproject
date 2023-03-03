@@ -363,4 +363,24 @@ class NewUserView(View):
     #     return redirect('confirmation', order.id )
 
          
-      
+class ProfileView(View):
+    def get (self,request,id=None):
+        addressee = request.user
+        Useraddresse = Addressee.objects.filter(addressee=addressee)
+
+        
+
+        html_data ={ 
+        'username':username,
+        'currentuser' :currentuser
+            }
+
+        
+
+
+        
+        return render(
+        request= request,
+        template_name= "home.html",
+        context= html_data
+        )
