@@ -1,8 +1,27 @@
 {% extends 'main.html'%}
 
 {% block content %}
+<style>
+  .info{
+    background-color: #40250E;
+    color: white;
+    border: 1px solid white;
+  }
+  .container{
+    display:flex;
+    justify-content: center;
 
-<h2> Please Confirm your Order </h2>
+  }
+  .subtotal{
+    display: flex;
+    justify-content: flex-end;
+    padding-bottom: 20px;
+
+  }
+  
+</style>
+
+
 
 <p>  </p>
 
@@ -10,46 +29,43 @@
     <div class="row">
       <div class="col text-center">
         <h1>Thank you {{order.addressee.first_name}}{{order.addressee.last_name}}</h1>
+        <h2> Please Confirm your Order </h2>
         <div>
-          <table class="table table-sm">
+          <table class="info table table-sm text-center">
           <tr>
-            <th>product</th>
-            <!-- <th>date</th>
-            <th>status</th> -->
-            <th>quantity</th>
-            <th>price</th>
-            <th>total</th>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Total</th>
           </tr>
           
           {% for item in items %}
           <tr>
             <td>{{item.product}}</td>
             <td>{{item.quantity}}</td>
-            <td>{{item.product.price}}</td>
-            <td>{{item.get_total}}</td>
-            <td> </td>
-            <td></td>
-
+            <td>${{item.product.price}}</td>
+            <td>${{item.get_total}}</td>
           </tr>
           {%endfor%}
           
-
-
         </table>
-        </div>
-        <tr>
-          {% for total in item_totals %}
-            <td>{{total}}</td>
-          {% endfor %}
+        <table class="subtotal">
+          <tr>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
+          <th></th>
         </tr>
         <tr>
           <td></td>
-          <td> </td>
-          <td> </td>
-          <td> {{order_price}}  </td>
-          
+          <td></td>
+          <td>Subtotal: </td>
+          <td></td>
+          <td> ${{order_price}}  </td>
         </tr>
-        
+        </table>
+      </div>
 
         <form method="POST">
           {% csrf_token %}
@@ -62,10 +78,6 @@
       line 44 and 45 take you to the view (beginning at the "get")  -->
       <input class="btn btn-primary btn-lg" type="submit" name="delete" value="Delete" /> 
       </form>
-
-
-    
-        
       </div>
     </div>
   </div>

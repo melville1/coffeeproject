@@ -8,7 +8,7 @@
 {% block content %}
 {% if username %}
     <h2> Welcome {{ currentuser }}</h2>
-    {% endif %}
+{% endif %}
    <h2>Please Place Your Order</h2>
    <form method="post" enctype="multipart/form-data">
        {{ form.as_p }}
