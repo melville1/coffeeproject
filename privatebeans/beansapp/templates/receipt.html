@@ -62,14 +62,19 @@
 </div>  
 
 <div class="shipping">
-  <h6>Thank you {{order.addressee.first_name}}{{order.addressee.last_name}}</h6>
+  
   <h6> Order Shipped To:</h6>
   {% if username %}
+
+  <h6>Thank you {{order.addressee.first_name}}{{order.addressee.last_name}}</h6>
+  <h6> Order Shipped To:</h6>
     <p>{{order.addressee.address}}</p>
     <p>{{order.addressee.city}}, {{order.addressee.state}}{{order.addressee.zipcode}}</p>
   {% else %}
-     <p>{{order.guest.address}}</p>
-     <p>{{order.guest.city}}, {{order.guest.state}}{{order.guest.zipcode}}</p>
+    <p>{{order.guest.first_name}}</p>
+    <p>{{order.guest.last_name}}</p>
+    <p>{{order.guest.address}}</p>
+    <p>{{order.guest.city}}, {{order.guest.state}}{{order.guest.zipcode}}</p>
   {% endif %}
   
   </div>   

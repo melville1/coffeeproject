@@ -182,15 +182,20 @@ class ReceiptView(View):
         orderitems = order.orderitem_set.all()
         item_total = Order.get_order_items(order)
         order_price = round(Order.get_total(order),2) 
+        username = request.user.username
         
         
         html_data={
             'order':order,
                 'items':orderitems,
                 'order_total': item_total,
-                'order_price': order_price, 
+                'order_price': order_price,
+
+                'username':username,
+                
             
             }
+      
         
         return render(
         request= request,
