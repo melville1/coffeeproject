@@ -16,7 +16,7 @@ class Guest(models.Model):
     address = models.CharField(max_length=15,null=True,blank=True)
     city = models.CharField(max_length=15,null=True,blank=True)
     state = models.CharField(max_length=15,null=True,blank=True)
-    zipcode = models.IntegerField(null=True)
+    zipcode = models.IntegerField(null=True,blank=True)
     phone_number = PhoneField(blank=True, null=True)        
 
 # addressee indicates the recipient of the order not necessarily the person placing the order.
