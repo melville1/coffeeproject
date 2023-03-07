@@ -364,16 +364,23 @@ class NewUserView(View):
 
          
 class ProfileView(View):
-    def get (self,request,id=None):
+    def get (self,request,):
         addressee = request.user
-        Useraddresse = Addressee.objects.filter(addressee=addressee)
+       
 
         
 
         html_data ={ 
-        'username':username,
-        'currentuser' :currentuser
-            }
+        'addressee':addressee,
+        }
+
+        
+        return render(
+        request= request,
+        template_name= "profile.html",
+        context= html_data
+        )
+
 
         
 
