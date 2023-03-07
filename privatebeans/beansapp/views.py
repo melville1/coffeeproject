@@ -292,8 +292,6 @@ class RegistrationView(View):
             order.save()
             return redirect('confirmation', order.id )
         
- 
-
     
 class GuestShippingView(View):
     def get(self,request,id):
@@ -363,4 +361,20 @@ class NewUserView(View):
     #     return redirect('confirmation', order.id )
 
          
-      
+class ProfileView(View):
+    def get (self,request,):
+        addressee = request.user
+       
+
+        
+
+        html_data ={ 
+        'addressee':addressee,
+        }
+
+        
+        return render(
+        request= request,
+        template_name= "profile.html",
+        context= html_data
+        )
