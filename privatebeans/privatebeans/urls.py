@@ -7,7 +7,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('index.html', include('beansapp.urls'))
+    path('', include('beansapp.urls'))
 
 ]
 
