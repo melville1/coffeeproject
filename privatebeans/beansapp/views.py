@@ -26,7 +26,7 @@ class HomeView(View):
         
         return render(
         request= request,
-        template_name= "home.html",
+        template_name= "index.html",
         context= html_data
         )
 
