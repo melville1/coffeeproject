@@ -2,6 +2,31 @@
 
 {% block content %}
 
+<style>
+    .login{
+    background-color: #40250E;
+    color: white;
+    border: 1px solid white;
+    display: inline-block;
+    padding: 20px;
+    margin-top: 50px;
+    position: relative;
+    left: 90px;
+    bottom: 10px;
+    }
+
+    .header{
+        margin-top:30px;
+        margin-left: 90px;
+    }
+    .btn{
+        margin-top: 10px;
+    }
+    .create{
+        margin-top: -5px;
+    }
+</style>
+
 {% if form.errors %}
 <p>Your username and password didn't match. Please try again.</p>
 {% endif %}
@@ -14,7 +39,8 @@
     <p>Please login to see this page.</p>
     {% endif %}
 {% endif %}
-
+<h2 class="header"> Please LogIn</h2>
+<div class="login">
 <form method="post" action="{% url 'login' %}">
 {% csrf_token %}
 <table>
@@ -28,8 +54,11 @@
 </tr>
 </table>
 
-<input type="submit" value="login">
+<input class="btn btn-primary btn-medium" type="submit" value="login">
 <input type="hidden" name="next" value="{{ next }}">
 </form>
+<p> Or create an account</p>
+<a class="btn btn-primary btn-medium  create " href="{% url 'registration' %}"> Create Account </a>
+</div>
 
 {% endblock %}
