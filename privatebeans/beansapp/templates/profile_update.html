@@ -1,0 +1,21 @@
+{% extends 'main.html'%}
+{% block content%}
+
+
+<h2> Update your Info </h2>
+<form method="post" enctype="multipart/form-data">
+    {{ profile_updateform.as_p }}
+    
+    {% csrf_token %}
+   
+    <input class="btn btn-primary btn-lg" type="submit" name="registration" value="Update Profile " /> 
+</form>
+
+
+
+
+
+
+
+
+{% endblock%}

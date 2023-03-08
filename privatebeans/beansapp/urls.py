@@ -2,6 +2,7 @@ from django.urls import path
 from beansapp.views import * 
 from django.conf.urls import include
 from django.contrib.auth import views as auth_views
+from .forms import UsernameForm
 
 
 urlpatterns = [
@@ -20,5 +21,11 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(template_name='logout.html'),name = 'logout'),
     path('guest_view/' , GuestView.as_view(), name='guest' ),
     path('guest_shipping/<int:id>' , GuestShippingView.as_view(), name='guest_shipping' ),
+   
     
-    path('profile/', ProfileView.as_view(), name='profile' ),]
+    path('profile/', ProfileView.as_view(), name='profile' ),
+    path('profile_update/', Profile_UpdateView.as_view(), name='profile_update' ),
+    path('password_update/', auth_views.PasswordChangeView.as_view(template_name='username_update.html',form_class=UsernameForm,success_url='/profile'),name = 'password_update'),
+    
+    
+    ]

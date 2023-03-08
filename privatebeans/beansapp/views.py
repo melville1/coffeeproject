@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
 from beansapp.models import Order, Addressee,OrderItem,Guest
-from .forms import AddresseeForm,GuestShippingForm,NewUserForm
+from .forms import AddresseeForm,GuestShippingForm,Profile_UpdateForm
 from django.forms import inlineformset_factory
 from django.contrib.auth import views as auth_views
-from django.contrib.auth import authenticate,login
-import re
+from django.contrib.auth import authenticate,login,update_session_auth_hash
+
 
 # Create your views here.
 
@@ -338,29 +338,11 @@ class GuestShippingView(View):
         else:
             
 
-            return redirect('new_user',order.id)
+            return redirect('guest_registration',order.id)
         
 
-class NewUserView(View):
-    def get(self,request,id=None):
-        form = NewUserForm()
-        
-        return render(
-        request= request,
-        template_name= "new_user.html",
-        context= {'form':form},
-        )
+
     
-    # def post(self,request,id=None):
-    #     form = NewUserForm(request.POST)
-    #     order = Order.objects.get(id=id)
-    #     addressee = order.addressee
-
-    #     addressee.username = request.POST['username']
-    #     addressee.password = request.POST['password']
-    #     addressee.email = request.POST['email']
-
-    #     return redirect('confirmation', order.id )
 
          
 class ProfileView(View):
@@ -382,12 +364,32 @@ class ProfileView(View):
         )
 
 
-        
+class Profile_UpdateView(View):
+    def get (self,request,):  
+
+        addressee = request.user
+        profile_updateform = Profile_UpdateForm()
+
+        html_data ={ 
+        'addressee':addressee,
+        'profile_updateform' : profile_updateform
+        }
 
 
-        
         return render(
-        request= request,
-        template_name= "home.html",
-        context= html_data
-        )
+                request= request,
+                template_name= "profile_update.html",
+                context= html_data
+                )
+
+    def post(self,request,):
+        user = request.user
+        profile_form = Profile_UpdateForm(request.POST,instance=user)
+        profile_form.save()
+
+
+        return redirect('profile')
+        
+class UserName_UpdateView(View):
+    def get (self,request,):
+        pass

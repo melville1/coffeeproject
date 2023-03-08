@@ -1,5 +1,6 @@
 from django.forms import ModelForm
 from beansapp.models import  Order,OrderItem,Addressee,Guest
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 
@@ -20,12 +21,16 @@ class AddresseeForm(ModelForm):
         model= Addressee
         fields=['first_name','last_name','address','city','state','zipcode','phone_number','username','password','email'] 
 
-
-
-class NewUserForm(ModelForm):
+class Profile_UpdateForm(ModelForm):
     class Meta:
         model= Addressee
-        fields=['username','password','email']
+        fields=['first_name','last_name','address','city','state','zipcode','phone_number'] 
+
+
+class UsernameForm(PasswordChangeForm):
+    pass
+    
+    
 
 class GuestShippingForm(ModelForm):
     class Meta:

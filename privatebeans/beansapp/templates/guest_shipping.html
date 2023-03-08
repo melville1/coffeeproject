@@ -1,3 +1,7 @@
+{% extends 'main.html'%}
+{% block content %}
+
+
 <h2>Please fill out your shipping information</h2>
 <form method="post" >
     {{ form.as_p }}
@@ -9,3 +13,4 @@
        {% endif %}
 </form>
 
+{% endblock %}
