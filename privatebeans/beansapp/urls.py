@@ -26,6 +26,6 @@ urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile' ),
     path('profile_update/', Profile_UpdateView.as_view(), name='profile_update' ),
     path('password_update/', auth_views.PasswordChangeView.as_view(template_name='username_update.html',form_class=UsernameForm,success_url='/profile'),name = 'password_update'),
-    
+    path('about/', AboutView.as_view(), name ='about'),
     
     ]

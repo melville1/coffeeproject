@@ -393,3 +393,12 @@ class Profile_UpdateView(View):
 class UserName_UpdateView(View):
     def get (self,request,):
         pass
+
+class AboutView(View):
+    
+    def get (self,request):
+        return render(
+            request= request,
+            template_name= "about.html",
+            context= {}
+        )

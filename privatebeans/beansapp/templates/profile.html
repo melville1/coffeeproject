@@ -31,7 +31,7 @@
       margin-top: 10px;
       position: relative;
       left: 400px;
-      bottom: 210px;
+      bottom: 270px;
       background-color: #40250E;
       color: white;
       border: 1px solid white;
@@ -55,16 +55,32 @@
       
     }
     .history_button{
-      margin-top: -90px;
+      display: inline-block;
+      padding: 20px;
+      position: absolute;
+      margin-top: 15px;
+      margin-left: -315px;
+      background-color: #40250E;
+      color: white;
+      border: 1px solid white;
+    }
+
+    .orderhistory{
+      margin-top: 15px;
       margin-left: 10px;
     }
+
+   
 
   </style>
 
 
 <div class="profile_welcome"><h2> Hello {{user.first_name}} {{user.last_name}} </h2></div>
 <div><h3 class="info"> Profile Info   &nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; 
-  Username & Password</h3></div>
+  Username & Password</h3>
+  
+ 
+</div>
 <div class="profile_info"> 
     {{user.first_name}} {{user.last_name}}
     <p>{{user.address}}</p>
@@ -77,7 +93,9 @@
 
 
 <div></div>
-<div></div>
+<div> </div>
+<div class="orderhistory"> <h3> Order History/Status </h3>  </div>
+
 
 <div class="username_info"> 
   {{user.first_name}} {{user.last_name}}
@@ -90,9 +108,12 @@
   </a>
 </div>
 
+
+
 <div class="history_button">
- 
-    <a class="btn btn-primary btn-medium"  href="{% url 'orderhistory' %}">
+    <p> Check Status and Order History </p>
+    <br>
+    <a class="btn btn-primary btn-sm"  href="{% url 'orderhistory' %}">
       Order History
     </a>
    
